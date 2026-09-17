@@ -151,6 +151,274 @@ const el = {
 
 
 
+
+/* GESTOES_RS_FIXAS_INICIO */
+
+/* ==========================================================
+   GESTÕES DO RIO GRANDE DO SUL
+   RECORTES ANUAIS ADOTADOS NO PAINEL
+========================================================== */
+
+const GESTOES_RS = [
+
+    {
+        nome: "Jair Soares",
+        curto: "Soares",
+        inicio: 1983,
+        fim: 1986,
+        cor: "rgba(230,159,0,0.085)",
+        borda: "rgba(230,159,0,0.26)"
+    },
+
+    {
+        nome: "Pedro Simon",
+        curto: "Simon",
+        inicio: 1987,
+        fim: 1990,
+        cor: "rgba(86,180,233,0.085)",
+        borda: "rgba(86,180,233,0.26)"
+    },
+
+    {
+        nome: "Alceu Collares",
+        curto: "Collares",
+        inicio: 1991,
+        fim: 1994,
+        cor: "rgba(0,158,115,0.085)",
+        borda: "rgba(0,158,115,0.26)"
+    },
+
+    {
+        nome: "Antônio Britto",
+        curto: "Britto",
+        inicio: 1995,
+        fim: 1998,
+        cor: "rgba(240,190,70,0.085)",
+        borda: "rgba(240,190,70,0.26)"
+    },
+
+    {
+        nome: "Olívio Dutra",
+        curto: "Dutra",
+        inicio: 1999,
+        fim: 2002,
+        cor: "rgba(0,114,178,0.085)",
+        borda: "rgba(0,114,178,0.26)"
+    },
+
+    {
+        nome: "Germano Rigotto",
+        curto: "Rigotto",
+        inicio: 2003,
+        fim: 2006,
+        cor: "rgba(213,94,0,0.085)",
+        borda: "rgba(213,94,0,0.26)"
+    },
+
+    {
+        nome: "Yeda Crusius",
+        curto: "Crusius",
+        inicio: 2007,
+        fim: 2010,
+        cor: "rgba(204,121,167,0.085)",
+        borda: "rgba(204,121,167,0.26)"
+    },
+
+    {
+        nome: "Tarso Genro",
+        curto: "Genro",
+        inicio: 2011,
+        fim: 2014,
+        cor: "rgba(120,120,120,0.075)",
+        borda: "rgba(120,120,120,0.23)"
+    },
+
+    {
+        nome: "José Ivo Sartori",
+        curto: "Sartori",
+        inicio: 2015,
+        fim: 2018,
+        cor: "rgba(102,194,165,0.085)",
+        borda: "rgba(102,194,165,0.26)"
+    },
+
+    {
+        nome: "Eduardo Leite 1º",
+        curto: "Leite 1º",
+        inicio: 2019,
+        fim: 2022,
+        cor: "rgba(252,141,98,0.085)",
+        borda: "rgba(252,141,98,0.26)"
+    },
+
+    {
+        nome: "Eduardo Leite 2º",
+        curto: "Leite 2º",
+        inicio: 2023,
+        fim: 2026,
+        cor: "rgba(141,160,203,0.085)",
+        borda: "rgba(141,160,203,0.26)"
+    }
+
+];
+
+
+
+/* ==========================================================
+   FUNDO DOS GRÁFICOS POR GESTÃO
+========================================================== */
+
+function getGovernmentBackground(
+    inicioGrafico,
+    fimGrafico
+) {
+
+    const shapes = [];
+
+    const annotations = [];
+
+
+    GESTOES_RS.forEach(
+        gestao => {
+
+            /*
+            A gestão só aparece se houver interseção
+            entre seu período e o eixo temporal do gráfico.
+            */
+
+            if (
+                gestao.fim < inicioGrafico
+                ||
+                gestao.inicio > fimGrafico
+            ) {
+
+                return;
+            }
+
+
+            const inicioVisivel =
+                Math.max(
+                    gestao.inicio,
+                    inicioGrafico
+                );
+
+
+            const fimVisivel =
+                Math.min(
+                    gestao.fim,
+                    fimGrafico
+                );
+
+
+            /*
+            Faixa vertical.
+            O +/- 0.5 faz o retângulo ocupar
+            integralmente cada ano.
+            */
+
+            shapes.push({
+
+                type: "rect",
+
+                xref: "x",
+
+                yref: "paper",
+
+                x0:
+                    inicioVisivel - 0.5,
+
+                x1:
+                    fimVisivel + 0.5,
+
+                y0: 0,
+
+                y1: 1,
+
+                fillcolor:
+                    gestao.cor,
+
+                line: {
+
+                    color:
+                        gestao.borda,
+
+                    width:
+                        0.6
+                },
+
+                layer:
+                    "below"
+
+            });
+
+
+            /*
+            Nome curto da gestão no topo.
+            */
+
+            annotations.push({
+
+                x:
+                    (
+                        inicioVisivel
+                        +
+                        fimVisivel
+                    )
+                    /
+                    2,
+
+                y:
+                    0.985,
+
+                xref:
+                    "x",
+
+                yref:
+                    "paper",
+
+                text:
+                    gestao.curto,
+
+                showarrow:
+                    false,
+
+                xanchor:
+                    "center",
+
+                yanchor:
+                    "top",
+
+                font: {
+
+                    size:
+                        8,
+
+                    color:
+                        "rgba(45,55,65,0.72)"
+                },
+
+                bgcolor:
+                    "rgba(255,255,255,0.36)",
+
+                borderpad:
+                    1
+
+            });
+
+        }
+    );
+
+
+    return {
+
+        shapes,
+        annotations
+    };
+}
+
+/* GESTOES_RS_FIXAS_FIM */
+
+
 /* ==========================================================
    UTILIDADES
 ========================================================== */
@@ -2125,6 +2393,8 @@ function plotScale(
 
 
 
+
+
 /* ==========================================================
    SÉRIE ESTADUAL
 ========================================================== */
@@ -2141,6 +2411,14 @@ function renderStateChart() {
 
     const cfg =
         getIndicatorConfig();
+
+
+    const governmentBackground =
+        getGovernmentBackground(
+            Number(cfg.inicio),
+            Number(cfg.fim)
+        );
+
 
 
     const rows =
@@ -2406,6 +2684,15 @@ function renderStateChart() {
                     "#eef1f4"
             },
 
+
+
+
+            shapes:
+                governmentBackground.shapes,
+
+            annotations:
+                governmentBackground.annotations,
+
             paper_bgcolor:
                 "white",
 
@@ -2494,6 +2781,14 @@ async function renderMunicipalChart() {
 
     const cfg =
         getIndicatorConfig();
+
+
+    const governmentBackground =
+        getGovernmentBackground(
+            Number(cfg.inicio),
+            Number(cfg.fim)
+        );
+
 
 
     const municipality =
@@ -2768,6 +3063,15 @@ async function renderMunicipalChart() {
                     "#eef1f4"
             },
 
+
+
+
+            shapes:
+                governmentBackground.shapes,
+
+            annotations:
+                governmentBackground.annotations,
+
             paper_bgcolor:
                 "white",
 
@@ -2834,145 +3138,156 @@ function renderGovernmentChart() {
         getIndicatorConfig();
 
 
-    const rows =
-        state.serieRS
-            .filter(
-                row =>
-
-                    Number(row.ano)
-                    >= Number(cfg.inicio)
-
-                    &&
-
-                    Number(row.ano)
-                    <= Number(cfg.fim)
-
-                    &&
-
-                    row.coorte_gestao
-            );
-
-
-    const groups =
-        new Map();
-
-
-    rows.forEach(
-        row => {
-
-            const name =
-                row.coorte_gestao;
-
-
-            const value =
-                row[
-                    def.field
-                ];
-
-
-            if (
-                !groups.has(name)
-            ) {
-
-                groups.set(
-                    name,
-                    {
-                        name,
-                        years: [],
-                        values: []
-                    }
-                );
-            }
-
-
-            const g =
-                groups.get(name);
-
-
-            g.years.push(
-                Number(row.ano)
-            );
-
-
-            if (
-                value !== null
-                &&
-                value !== undefined
-                &&
-                Number.isFinite(
-                    Number(value)
-                )
-            ) {
-
-                g.values.push(
-                    Number(value)
-                );
-            }
-        }
-    );
-
+    /*
+    A estrutura das gestões é fixa.
+    Os dados observados são procurados dentro
+    de cada intervalo.
+    */
 
     const data =
-        Array.from(
-            groups.values()
-        )
-        .map(
-            g => ({
+        GESTOES_RS.map(
+            gestao => {
 
-                name:
-                    g.name,
+                const registros =
+                    state.serieRS
+                    .filter(
+                        row => {
 
-                start:
-                    Math.min(
-                        ...g.years
-                    ),
+                            const ano =
+                                Number(row.ano);
 
-                end:
-                    Math.max(
-                        ...g.years
-                    ),
 
-                n:
-                    g.values.length,
+                            return (
+                                ano >= gestao.inicio
+                                &&
+                                ano <= gestao.fim
+                                &&
+                                ano >= Number(cfg.inicio)
+                                &&
+                                ano <= Number(cfg.fim)
+                            );
+                        }
+                    );
 
-                mean:
-                    g.values.length
+
+                const observacoes =
+                    registros
+                    .map(
+                        row => ({
+
+                            ano:
+                                Number(row.ano),
+
+                            valor:
+                                row[
+                                    def.field
+                                ]
+                        })
+                    )
+                    .filter(
+                        item =>
+                            item.valor !== null
+                            &&
+                            item.valor !== undefined
+                            &&
+                            Number.isFinite(
+                                Number(
+                                    item.valor
+                                )
+                            )
+                    )
+                    .map(
+                        item => ({
+
+                            ano:
+                                item.ano,
+
+                            valor:
+                                Number(
+                                    item.valor
+                                )
+                        })
+                    );
+
+
+                const valores =
+                    observacoes.map(
+                        item =>
+                            item.valor
+                    );
+
+
+                const media =
+                    valores.length
 
                     ? (
-                        g.values.reduce(
+                        valores.reduce(
                             (a,b) =>
                                 a+b,
                             0
                         )
                         /
-                        g.values.length
+                        valores.length
                     )
 
-                    : null
-            })
-        )
-        .filter(
-            g =>
-                g.mean !== null
-        )
-        .sort(
-            (a,b) =>
-                a.start
-                -
-                b.start
+                    : null;
+
+
+                const anosObservados =
+                    observacoes.map(
+                        item =>
+                            item.ano
+                    );
+
+
+                return {
+
+                    ...gestao,
+
+                    media,
+
+                    n:
+                        valores.length,
+
+                    primeiroAnoObservado:
+                        anosObservados.length
+                        ? Math.min(
+                            ...anosObservados
+                        )
+                        : null,
+
+                    ultimoAnoObservado:
+                        anosObservados.length
+                        ? Math.max(
+                            ...anosObservados
+                        )
+                        : null
+                };
+
+            }
         );
 
 
-    const raw =
-        data.map(
+    /*
+    Escala monetária deve considerar somente
+    períodos com valores observados.
+    */
+
+    const valoresEscala =
+        data
+        .filter(
             g =>
-                g.mean
+                g.media !== null
+        )
+        .map(
+            g =>
+                g.media
         );
 
 
     const scale =
         plotScale(
-            raw,
+            valoresEscala,
             key
         );
 
@@ -2980,12 +3295,147 @@ function renderGovernmentChart() {
     const labels =
         data.map(
             g =>
-                `${g.name}<br>`
-                +
-                `${g.start}–${g.end}`
-                +
-                ` (${g.n} anos observados)`
+                `${g.nome}<br>${g.inicio}–${g.fim}`
         );
+
+
+    const valoresPlot =
+        data.map(
+            g =>
+                g.media === null
+
+                ? null
+
+                : (
+                    g.media
+                    /
+                    scale.divisor
+                )
+        );
+
+
+    const textos =
+        data.map(
+            g => {
+
+                if (
+                    g.media === null
+                ) {
+
+                    return (
+                        "Sem dados disponíveis "
+                        +
+                        "para este indicador"
+                    );
+                }
+
+
+                return (
+                    formatValue(
+                        g.media,
+                        key
+                    )
+                );
+            }
+        );
+
+
+    const observacao =
+        data.map(
+            g => {
+
+                if (
+                    g.n === 0
+                ) {
+
+                    return (
+                        "Nenhum ano observado"
+                    );
+                }
+
+
+                if (
+                    g.primeiroAnoObservado
+                    ===
+                    g.ultimoAnoObservado
+                ) {
+
+                    return (
+                        `1 ano observado: `
+                        +
+                        `${g.primeiroAnoObservado}`
+                    );
+                }
+
+
+                return (
+                    `${g.n} anos observados: `
+                    +
+                    `${g.primeiroAnoObservado}`
+                    +
+                    "–"
+                    +
+                    `${g.ultimoAnoObservado}`
+                );
+            }
+        );
+
+
+    /*
+    Anotações explícitas nos períodos sem dados.
+    */
+
+    const annotations =
+        data
+        .map(
+            (g, i) => {
+
+                if (
+                    g.media !== null
+                ) {
+
+                    return null;
+                }
+
+
+                return {
+
+                    x:
+                        0,
+
+                    y:
+                        labels[i],
+
+                    xref:
+                        "x",
+
+                    yref:
+                        "y",
+
+                    text:
+                        "Sem dados",
+
+                    showarrow:
+                        false,
+
+                    xanchor:
+                        "left",
+
+                    xshift:
+                        7,
+
+                    font: {
+
+                        size:
+                            10,
+
+                        color:
+                            "#87919c"
+                    }
+                };
+            }
+        )
+        .filter(Boolean);
 
 
     Plotly.react(
@@ -2996,12 +3446,7 @@ function renderGovernmentChart() {
 
             {
                 x:
-                    raw.map(
-                        v =>
-                            v
-                            /
-                            scale.divisor
-                    ),
+                    valoresPlot,
 
                 y:
                     labels,
@@ -3013,34 +3458,43 @@ function renderGovernmentChart() {
                     "h",
 
                 text:
-                    data.map(
-                        g =>
-                            formatValue(
-                                g.mean,
-                                key
-                            )
-                    ),
+                    textos,
 
                 textposition:
                     "auto",
 
+                customdata:
+                    observacao,
+
                 hovertemplate:
-                    "%{y}<br>"
+                    "%{y}"
                     +
-                    "Média anual: %{text}"
+                    "<br>%{customdata}"
+                    +
+                    "<br>Média anual: %{text}"
                     +
                     "<extra></extra>"
             }
+
         ],
 
         {
 
             margin: {
-                l:205,
-                r:35,
-                t:20,
-                b:55
+
+                l:
+                    210,
+
+                r:
+                    40,
+
+                t:
+                    20,
+
+                b:
+                    55
             },
+
 
             xaxis: {
 
@@ -3048,8 +3502,12 @@ function renderGovernmentChart() {
                     `Média anual — ${scale.unit}`,
 
                 gridcolor:
-                    "#eef1f4"
+                    "#eef1f4",
+
+                rangemode:
+                    "tozero"
             },
+
 
             yaxis: {
 
@@ -3057,8 +3515,19 @@ function renderGovernmentChart() {
                     "reversed",
 
                 automargin:
-                    true
+                    true,
+
+                categoryorder:
+                    "array",
+
+                categoryarray:
+                    labels
             },
+
+
+            annotations:
+                annotations,
+
 
             paper_bgcolor:
                 "white",
@@ -3068,9 +3537,11 @@ function renderGovernmentChart() {
 
             showlegend:
                 false
+
         },
 
         {
+
             responsive:
                 true,
 
@@ -3082,7 +3553,9 @@ function renderGovernmentChart() {
 
     el.governmentChartSubtitle
         .textContent =
-            `${def.label} — média anual dentro de cada coorte | `
+            `${def.label} — `
+            +
+            "média anual dentro de cada coorte | "
             +
             `${unitExplanation(key)}`;
 }
@@ -3097,6 +3570,38 @@ function renderTerritoryChart() {
 
     const rows =
         state.serieRS;
+
+
+    const anosTerritorio =
+        rows
+        .map(
+            row =>
+                Number(row.ano)
+        )
+        .filter(
+            ano =>
+                Number.isFinite(ano)
+        );
+
+
+    const governmentBackground =
+        getGovernmentBackground(
+            Math.min(...anosTerritorio),
+            Math.max(...anosTerritorio)
+        );
+
+
+    const anosDisponiveis =
+        rows
+        .map(
+            row =>
+                Number(row.ano)
+        )
+        .filter(
+            ano =>
+                Number.isFinite(ano)
+        );
+
 
 
     const x =
@@ -3221,6 +3726,15 @@ function renderTerritoryChart() {
                 y:
                     1.1
             },
+
+
+
+
+            shapes:
+                governmentBackground.shapes,
+
+            annotations:
+                governmentBackground.annotations,
 
             paper_bgcolor:
                 "white",
