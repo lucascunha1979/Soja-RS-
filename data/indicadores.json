@@ -1,0 +1,88 @@
+{
+  "titulo": "Soja no Rio Grande do Sul",
+  "periodo": "1983-2024",
+  "classes_mapa": 5,
+  "metodo_classificacao": "Jenks Natural Breaks",
+  "cortes_fixos_no_tempo": true,
+  "ano_inicio_percentual_municipal_comparavel": 2013,
+  "area_oficial_rs_km2": 281707.151,
+  "paleta": {
+    "sem_dado": "#BDBDBD",
+    "zero": "#FFFFFF",
+    "classes": [
+      "#FFFFB2",
+      "#C7E9B4",
+      "#7FCDBB",
+      "#41B6C4",
+      "#225EA8"
+    ],
+    "contorno": "#555555",
+    "selecionado": "#FF6B00"
+  },
+  "indicadores": {
+    "area_plantada_ha": {
+      "label": "Área plantada",
+      "unidade": "ha",
+      "inicio": 1988,
+      "fim": 2024,
+      "tipo": "absoluto",
+      "grupo": "area"
+    },
+    "pct_area_municipal_plantada": {
+      "label": "Área plantada / área municipal",
+      "unidade": "%",
+      "inicio": 2013,
+      "fim": 2024,
+      "tipo": "percentual_municipal",
+      "grupo": "area"
+    },
+    "area_colhida_ha": {
+      "label": "Área colhida",
+      "unidade": "ha",
+      "inicio": 1983,
+      "fim": 2024,
+      "tipo": "absoluto",
+      "grupo": "area"
+    },
+    "pct_area_municipal_colhida": {
+      "label": "Área colhida / área municipal",
+      "unidade": "%",
+      "inicio": 2013,
+      "fim": 2024,
+      "tipo": "percentual_municipal",
+      "grupo": "area"
+    },
+    "quantidade_produzida_t": {
+      "label": "Quantidade produzida",
+      "unidade": "t",
+      "inicio": 1983,
+      "fim": 2024,
+      "tipo": "absoluto",
+      "grupo": "producao"
+    },
+    "rendimento_medio_kg_ha": {
+      "label": "Rendimento médio",
+      "unidade": "kg/ha",
+      "inicio": 1983,
+      "fim": 2024,
+      "tipo": "absoluto",
+      "grupo": "rendimento"
+    },
+    "valor_nominal_mil_reais": {
+      "label": "Valor nominal da produção",
+      "unidade": "R$ mil",
+      "inicio": 1994,
+      "fim": 2024,
+      "tipo": "monetario_nominal",
+      "grupo": "valor"
+    },
+    "valor_real_2024_mil_reais": {
+      "label": "Valor real da produção",
+      "unidade": "R$ mil de 2024",
+      "inicio": 1995,
+      "fim": 2024,
+      "tipo": "monetario_real",
+      "grupo": "valor"
+    }
+  }
+}

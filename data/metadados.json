@@ -1,0 +1,78 @@
+[
+  {
+    "campo": "periodo_dados",
+    "valor": "1983-2024"
+  },
+  {
+    "campo": "fonte_soja",
+    "valor": "IBGE - Pesquisa Agrícola Municipal / Tabela 1612"
+  },
+  {
+    "campo": "produto",
+    "valor": "Soja (em grão)"
+  },
+  {
+    "campo": "fonte_malha",
+    "valor": "IBGE - Malha Municipal Digital 2024"
+  },
+  {
+    "campo": "crs_malha",
+    "valor": "SIRGAS 2000 - EPSG:4674"
+  },
+  {
+    "campo": "municipios",
+    "valor": "497"
+  },
+  {
+    "campo": "observacoes_municipio_ano",
+    "valor": "20874"
+  },
+  {
+    "campo": "area_oficial_rs_km2",
+    "valor": "281707.151"
+  },
+  {
+    "campo": "area_soma_497_municipios_km2",
+    "valor": "268623.51399999997"
+  },
+  {
+    "campo": "valor_real_periodo",
+    "valor": "1995-2024"
+  },
+  {
+    "campo": "deflator",
+    "valor": "IPCA - média anual dos números-índices mensais"
+  },
+  {
+    "campo": "base_precos",
+    "valor": "R$ médios de 2024"
+  },
+  {
+    "campo": "valor_1994",
+    "valor": "mantido apenas em termos nominais"
+  },
+  {
+    "campo": "esmeralda_2020",
+    "valor": "Valores analíticos atualizados pelo SIDRA conforme errata do IBGE; valores originais preservados"
+  },
+  {
+    "campo": "pelotas_geometria",
+    "valor": "Geometria inválida no arquivo de origem; reparada apenas na cópia analítica"
+  },
+  {
+    "campo": "malha_referencia_municipal",
+    "valor": "IBGE 2024"
+  },
+  {
+    "campo": "comparabilidade_percentuais_municipais",
+    "valor": "2013-2024"
+  },
+  {
+    "campo": "mapas_1983_2012",
+    "valor": "Valores históricos representados sobre a malha municipal de 2024; não interpretar limites como históricos."
+  },
+  {
+    "campo": "percentuais_maiores_100_pre_1996",
+    "valor": "Ocorrências preservadas como evidência de incompatibilidade entre territórios históricos e áreas municipais de 2024."
+  }
+]
