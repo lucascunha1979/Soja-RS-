@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Soja no Rio Grande do Sul — 1983–2024
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div>
+
+        <h1>
+            Soja no Rio Grande do Sul
+        </h1>
+
+        <p>
+            Evolução municipal e estadual — 1983–2024
+        </p>
+
+    </div>
+
+
+    <div class="header-source">
+
+        Fonte principal:
+        IBGE — Pesquisa Agrícola Municipal
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+
+<!-- =======================================================
+     FILTROS
+======================================================== -->
+
+<section class="filters-panel">
+
+
+    <div class="filter-group">
+
+        <label for="indicador">
+            Indicador
+        </label>
+
+        <select id="indicador">
+
+            <option value="area_plantada">
+                Área plantada
+            </option>
+
+            <option value="area_colhida">
+                Área colhida
+            </option>
+
+            <option value="quantidade_produzida_t">
+                Quantidade produzida
+            </option>
+
+            <option value="rendimento_medio_kg_ha">
+                Rendimento médio
+            </option>
+
+            <option value="valor_real_2024_mil_reais">
+                Valor real da produção
+            </option>
+
+            <option value="valor_nominal_mil_reais">
+                Valor nominal da produção
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <div
+        class="filter-group"
+        id="grupo-grandeza"
+    >
+
+        <label for="grandeza">
+            Forma de medida
+        </label>
+
+        <select id="grandeza">
+
+            <option value="ha">
+                Total em hectares
+            </option>
+
+            <option value="pct_municipio">
+                % da área do município
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <div class="filter-group filter-year">
+
+        <label for="ano">
+            Ano
+        </label>
+
+        <div class="year-control">
+
+            <input
+                id="ano"
+                type="range"
+                min="1988"
+                max="2024"
+                value="2024"
+                step="1"
+            >
+
+            <strong id="ano-label">
+                2024
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="filter-group">
+
+        <label for="municipio-select">
+            Município
+        </label>
+
+        <select id="municipio-select">
+
+            <option value="">
+                Todos os municípios
+            </option>
+
+        </select>
+
+    </div>
+
+
+</section>
+
+
+
+<div
+    id="aviso"
+    class="notice hidden"
+></div>
+
+
+
+<!-- =======================================================
+     CARDS
+======================================================== -->
+
+<section class="cards">
+
+
+    <article class="card">
+
+        <span
+            class="card-label"
+            id="card-total-label"
+        >
+            Total no RS
+        </span>
+
+        <strong
+            class="card-value"
+            id="card-total"
+        >
+            —
+        </strong>
+
+        <small
+            class="card-note"
+            id="card-total-note"
+        ></small>
+
+    </article>
+
+
+
+    <article class="card">
+
+        <span class="card-label">
+            Média municipal
+        </span>
+
+        <strong
+            class="card-value"
+            id="card-media"
+        >
+            —
+        </strong>
+
+        <small class="card-note">
+            média dos municípios com dado
+        </small>
+
+    </article>
+
+
+
+    <article class="card">
+
+        <span class="card-label">
+            Mediana municipal
+        </span>
+
+        <strong
+            class="card-value"
+            id="card-mediana"
+        >
+            —
+        </strong>
+
+        <small class="card-note">
+            valor central da distribuição
+        </small>
+
+    </article>
+
+
+
+    <article class="card">
+
+        <span class="card-label">
+            Municípios com dado
+        </span>
+
+        <strong
+            class="card-value"
+            id="card-validos"
+        >
+            —
+        </strong>
+
+        <small class="card-note">
+            ausência não é tratada como zero
+        </small>
+
+    </article>
+
+
+
+    <article class="card">
+
+        <span class="card-label">
+            Área de soja ÷ território do RS
+        </span>
+
+        <strong
+            class="card-value"
+            id="card-pct-rs"
+        >
+            —
+        </strong>
+
+        <small class="card-note">
+            equivalência territorial
+        </small>
+
+    </article>
+
+
+</section>
+
+
+
+<!-- =======================================================
+     MAPA + RANKING
+======================================================== -->
+
+<section class="main-grid">
+
+
+    <article class="panel map-panel">
+
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2 id="map-title">
+                    Distribuição municipal
+                </h2>
+
+                <p id="map-subtitle">
+                    2024
+                </p>
+
+            </div>
+
+
+            <div class="animation-controls">
+
+                <button
+                    id="map-play"
+                    type="button"
+                >
+                    ▶ Animar
+                </button>
+
+
+                <select
+                    id="animation-speed"
+                    title="Velocidade da animação"
+                >
+
+                    <option value="1500">
+                        lenta
+                    </option>
+
+                    <option
+                        value="900"
+                        selected
+                    >
+                        normal
+                    </option>
+
+                    <option value="450">
+                        rápida
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div id="map"></div>
+
+
+        <div
+            id="legend"
+            class="legend"
+        ></div>
+
+
+    </article>
+
+
+
+    <article class="panel ranking-panel">
+
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Ranking municipal
+                </h2>
+
+                <p id="ranking-subtitle">
+                    2024
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="ranking"
+            class="ranking"
+        ></div>
+
+
+    </article>
+
+
+</section>
+
+
+
+<!-- =======================================================
+     SÉRIES TEMPORAIS
+======================================================== -->
+
+<section class="charts-grid">
+
+
+    <article class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Evolução no Rio Grande do Sul
+                </h2>
+
+                <p id="state-chart-subtitle">
+                    Série histórica
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="chart-state"
+            class="chart"
+        ></div>
+
+    </article>
+
+
+
+    <article class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2 id="municipal-chart-title">
+                    Evolução municipal
+                </h2>
+
+                <p id="municipal-chart-subtitle">
+                    Selecione um município
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="chart-municipio"
+            class="chart"
+        ></div>
+
+    </article>
+
+
+</section>
+
+
+
+<!-- =======================================================
+     ANÁLISES COMPLEMENTARES
+======================================================== -->
+
+<section class="analysis-grid">
+
+
+    <article class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Comparação por coorte de gestão
+                </h2>
+
+                <p id="government-chart-subtitle">
+                    Média anual do indicador em cada período
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="chart-governos"
+            class="chart chart-large"
+        ></div>
+
+
+        <p class="panel-note">
+
+            As barras seguem ordem cronológica.
+            São agrupamentos temporais descritivos;
+            não representam avaliação ou atribuição causal
+            dos resultados agrícolas às gestões.
+
+        </p>
+
+    </article>
+
+
+
+    <article class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Expansão territorial da soja no RS
+                </h2>
+
+                <p>
+                    Área de soja como equivalente à área territorial total do Estado
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="chart-territorio"
+            class="chart chart-large"
+        ></div>
+
+
+        <p class="panel-note">
+
+            O percentual compara a área agrícola anual informada
+            com a área territorial oficial do Rio Grande do Sul.
+            Não representa cobertura instantânea do solo.
+
+        </p>
+
+    </article>
+
+
+</section>
+
+
+
+<!-- =======================================================
+     TABELA
+======================================================== -->
+
+<section class="panel table-panel">
+
+
+    <div class="panel-header table-header">
+
+
+        <div>
+
+            <h2>
+                Tabela municipal
+            </h2>
+
+            <p id="table-subtitle">
+                Valores do ano selecionado
+            </p>
+
+        </div>
+
+
+        <div class="table-actions">
+
+            <input
+                id="table-search"
+                type="text"
+                placeholder="Buscar município..."
+            >
+
+
+            <button
+                id="download-csv"
+                type="button"
+            >
+                Baixar CSV
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table id="municipal-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Posição
+                    </th>
+
+                    <th>
+                        Município
+                    </th>
+
+                    <th>
+                        Código IBGE
+                    </th>
+
+                    <th id="table-value-header">
+                        Valor
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="table-body">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =======================================================
+     COMO LER
+======================================================== -->
+
+<section class="methodology">
+
+
+    <h2>
+        Como ler os indicadores
+    </h2>
+
+
+    <div class="method-grid">
+
+
+        <div class="method-card">
+
+            <h3>
+                Área
+            </h3>
+
+            <p>
+                <strong>ha</strong> significa hectare.
+                1 hectare corresponde a 10.000 m²
+                ou 0,01 km².
+            </p>
+
+            <p>
+                Para área plantada e área colhida,
+                o painel permite alternar entre
+                hectares e percentual da área do município.
+            </p>
+
+        </div>
+
+
+
+        <div class="method-card">
+
+            <h3>
+                Produção e rendimento
+            </h3>
+
+            <p>
+                <strong>t</strong> significa tonelada.
+                1 tonelada corresponde a 1.000 kg.
+            </p>
+
+            <p>
+                <strong>kg/ha</strong> indica o rendimento:
+                quilogramas produzidos por hectare colhido.
+            </p>
+
+        </div>
+
+
+
+        <div class="method-card">
+
+            <h3>
+                k e M nos gráficos
+            </h3>
+
+            <p>
+                Plotagens compactas podem usar:
+                <strong>k = mil</strong> e
+                <strong>M = milhões</strong>.
+            </p>
+
+            <p>
+                Exemplo:
+                30k ha = 30 mil hectares;
+                7M ha = 7 milhões de hectares.
+            </p>
+
+        </div>
+
+
+
+        <div class="method-card">
+
+            <h3>
+                Sem dado e zero
+            </h3>
+
+            <p>
+                <strong>Sem dado</strong> aparece em cinza.
+                Um zero efetivamente informado aparece em branco.
+            </p>
+
+            <p>
+                Valores positivos, mesmo muito baixos,
+                pertencem às classes coloridas e nunca são
+                confundidos com ausência de informação.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <hr>
+
+
+
+    <h2>
+        Valores monetários: nominal e real
+    </h2>
+
+
+    <p>
+
+        O valor nominal corresponde ao valor informado pela
+        Pesquisa Agrícola Municipal no próprio ano.
+        A partir de 1994, a unidade da fonte é
+        <strong>mil reais (R$ mil)</strong>.
+
+    </p>
+
+
+    <p>
+
+        Para facilitar a leitura, o painel converte apenas a
+        <strong>forma de exibição</strong>:
+        valores maiores podem aparecer em R$ milhões ou
+        R$ bilhões. O dado original em R$ mil permanece
+        preservado na base.
+
+    </p>
+
+
+    <div class="formula-box">
+
+        <strong>
+            Correção monetária adotada neste painel
+        </strong>
+
+        <p>
+            IPCA médio anual =
+            média dos 12 números-índices mensais do ano
+        </p>
+
+        <p>
+            Fator do ano para 2024 =
+            IPCA médio de 2024 ÷ IPCA médio do ano
+        </p>
+
+        <p>
+            Valor real em preços médios de 2024 =
+            valor nominal × fator
+        </p>
+
+    </div>
+
+
+    <p>
+
+        A série utilizada é o
+        <strong>IPCA — número-índice</strong>,
+        Tabela 1737 do SIDRA,
+        variável 2266, com base dezembro de 1993 = 100.
+
+        O índice médio de 2024 utilizado como referência é
+        6.952,073333.
+
+    </p>
+
+
+    <p>
+
+        A utilização da média dos 12 índices mensais é uma
+        <strong>escolha metodológica deste painel</strong>,
+        adequada ao tratamento de uma variável econômica anual.
+        Não se trata de uma regra específica da PAM.
+
+    </p>
+
+
+    <p>
+
+        Os valores reais são calculados para
+        <strong>1995–2024</strong>.
+        O ano de 1994 é preservado apenas em valores nominais,
+        devido à transição monetária ocorrida naquele ano.
+
+    </p>
+
+
+    <hr>
+
+
+
+    <h2>
+        Área territorial
+    </h2>
+
+
+    <p>
+
+        O indicador estadual
+        <strong>Área de soja ÷ território do RS</strong>
+        divide a área plantada ou colhida de soja pela área
+        territorial oficial do Rio Grande do Sul:
+        <strong>281.707,151 km²</strong>
+        ou <strong>28.170.715,1 hectares</strong>.
+
+    </p>
+
+
+    <p>
+
+        Por exemplo, 12,08% significa que a área de soja
+        informada naquele ano equivale a 12,08% da área
+        territorial total do Estado. Isso não deve ser
+        interpretado como uma medição instantânea de cobertura
+        do solo.
+
+    </p>
+
+
+    <p>
+
+        Os percentuais municipais são utilizados como indicador
+        territorial comparável somente entre
+        <strong>2013 e 2024</strong>.
+        Nos mapas históricos de valores absolutos,
+        a malha municipal de 2024 funciona apenas como
+        referência espacial.
+
+    </p>
+
+
+    <hr>
+
+
+
+    <h2>
+        Classificação dos mapas
+    </h2>
+
+
+    <p>
+
+        Os valores positivos são distribuídos em
+        <strong>cinco classes de Jenks
+        (Natural Breaks)</strong>.
+
+        Os limites são calculados uma vez para cada indicador e
+        mantidos fixos ao longo da série, permitindo comparar
+        as cores entre anos.
+
+    </p>
+
+
+
+    <hr>
+
+
+
+    <h2>
+        Fontes
+    </h2>
+
+
+    <div class="sources">
+
+        <a
+            href="https://sidra.ibge.gov.br/tabela/1612"
+            target="_blank"
+            rel="noopener"
+        >
+            IBGE/SIDRA — Tabela 1612 — Produção Agrícola Municipal
+        </a>
+
+
+        <a
+            href="https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9117-producao-agricola-municipal-culturas-temporarias-e-permanentes.html"
+            target="_blank"
+            rel="noopener"
+        >
+            IBGE — Pesquisa Agrícola Municipal (PAM)
+        </a>
+
+
+        <a
+            href="https://sidra.ibge.gov.br/tabela/1737"
+            target="_blank"
+            rel="noopener"
+        >
+            IBGE/SIDRA — Tabela 1737 — IPCA
+        </a>
+
+
+        <a
+            href="https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html"
+            target="_blank"
+            rel="noopener"
+        >
+            IBGE — IPCA e metodologia
+        </a>
+
+
+        <a
+            href="https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html"
+            target="_blank"
+            rel="noopener"
+        >
+            IBGE — Malhas territoriais
+        </a>
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script
+    src="https://cdn.plot.ly/plotly-2.35.2.min.js">
+</script>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
